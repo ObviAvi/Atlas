@@ -1,8 +1,8 @@
-# Atlas — GraphRAG Decision Intelligence for Teams
+# Atlas: GraphRAG Decision Intelligence for Teams
 
 Atlas turns scattered company documents into a queryable knowledge graph, then puts two
 AI co-workers on top of it: a **Librarian** that answers factual questions with evidence,
-and a **Boardroom** that debates decisions from both sides before recommending a Go/No-Go.
+and a **Boardroom** that debates decisions from both sides before making a reccomendation.
 
 ## Problem Statement
 
