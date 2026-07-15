@@ -50,8 +50,10 @@ export default function Home() {
               Atlas
             </h1>
             <p className="mx-auto mt-7 max-w-xl text-sm leading-relaxed text-cream/70 md:text-base">
-              Structure company data into a living knowledge graph. Query facts with the Librarian
-              or stress-test new ideas in the Boardroom — all grounded in your company&rsquo;s own data.
+              Structure company data into a living knowledge graph.
+              <br />
+              <br />
+              Query facts with the Librarian or stress test new ideas in the Boardroom, all grounded in your company's own data.
             </p>
             <button
               onClick={enter}
