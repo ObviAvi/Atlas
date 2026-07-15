@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-top: #E4DFD6;
+  --bg-bottom: #C8BFB2;
+  --ink: #1A1612;
+  --cream: #F5F1EB;
+  --walnut: #3D2B1F;
+  --accent: #6B4E3D;
+}
+
+body {
+  color: var(--ink);
+  background: linear-gradient(165deg, var(--bg-top) 0%, var(--bg-bottom) 45%, #B5A898 100%);
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+@layer components {
+  .pill-tag {
+    @apply inline-flex items-center rounded-full border border-walnut-700/10 bg-cream/80 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-walnut-600;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-walnut-900 px-7 py-3 text-sm font-medium uppercase tracking-[0.12em] text-cream transition-all duration-300 hover:bg-walnut-800 hover:shadow-card disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-walnut-700/20 bg-cream/60 px-6 py-2.5 text-xs font-medium uppercase tracking-[0.14em] text-walnut-700 transition-all duration-300 hover:border-walnut-700/40 hover:bg-cream;
+  }
+
+  .surface-card {
+    @apply rounded-3xl border border-white/40 bg-cream/90 shadow-float backdrop-blur-sm;
+  }
+
+  .input-field {
+    @apply w-full resize-none rounded-2xl border border-walnut-700/10 bg-white/70 px-5 py-4 font-body text-walnut-900 placeholder:text-walnut-400 focus:border-walnut-500 focus:outline-none focus:ring-2 focus:ring-walnut-500/20 transition-all;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.35s; }
+  .stagger-4 { animation-delay: 0.5s; }
+}
+
+/* Made with Bob */
