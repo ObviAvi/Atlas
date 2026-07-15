@@ -1,9 +1,93 @@
-git
-## Overview
-A dual-interface application for structuring company data into a Knowledge Graph and reasoning over it:
-1. **Atlas**: Ingest documents and visualize the resulting entity/relationship graph
-2. **The Librarian**: Hybrid GraphRAG interface for factual querying (vector + full-text + Cypher)
-3. **The Boardroom**: Multi-agent debate system (Strategist vs Risk Analyst) for idea evaluation
+# Atlas — GraphRAG Decision Intelligence for Teams
+
+Atlas turns scattered company documents into a queryable knowledge graph, then puts two
+AI co-workers on top of it: a **Librarian** that answers factual questions with evidence,
+and a **Boardroom** that debates decisions from both sides before recommending a Go/No-Go.
+
+## Problem Statement
+
+Organizations run on knowledge that lives in disconnected documents — project briefs, org
+charts, budgets, OKRs, client contracts. The facts that matter for a decision are spread
+across many of them, so answering a cross-cutting question ("if Project Zeta goes down,
+which clients are affected, and who owns the fix?") or pressure-testing a proposal ("should
+we fully fund Project Gamma?") means a person manually stitching the pieces together. That
+work is slow, easy to get wrong, and rarely surfaces the risks hiding one or two hops away
+in the data. Teams end up making consequential calls on an incomplete picture.
+
+## Solution
+
+Atlas transforms unstructured company data into a structured **Knowledge Graph** and layers
+intelligent, outcome-driven tools on top of it. It has three interfaces:
+
+1. **Atlas** — Ingest documents and visualize the resulting entity/relationship graph.
+2. **The Librarian** — Hybrid GraphRAG interface for factual querying (vector + full-text + Cypher).
+3. **The Boardroom** — Multi-agent debate system (Strategist vs. Risk Analyst) that evaluates
+   an idea against the graph and produces an evidence-cited recommendation.
+
+Instead of hunting through documents, a user asks a question or proposes a decision, and
+Atlas reasons over the connected graph to deliver a grounded answer — reducing repetitive
+lookup work and improving the quality of decisions.
+
+## Selected Challenge Theme
+
+**Wild Card Challenge.** Atlas is a **decision-intelligence platform with AI co-workers**: it
+uses AI as a true collaborator that helps a team *plan, decide, and coordinate* rather than
+just complete isolated tasks. The Librarian removes repetitive knowledge-lookup work, and the
+Boardroom orchestrates a multi-agent workflow that improves decision-making by forcing an
+evidence-based debate before a recommendation is made.
+
+## AI Approach & Architecture
+
+**AI is the core of the product**, used in three places:
+
+- **Knowledge Graph construction** — LangChain's `LLMGraphTransformer` extracts a typed
+  ontology (Employees, Projects, Departments, Clients, OKRs, Budgets and their relationships)
+  from raw text and loads it into Neo4j.
+- **Hybrid retrieval (GraphRAG)** — **IBM Granite embeddings** (`granite-embedding-30m-english`,
+  run locally) power vector search over document chunks, combined with full-text search and
+  **graph expansion** over `MENTIONS` relationships, plus LLM-generated **Cypher** for
+  structured facts.
+- **Multi-agent reasoning** — a **LangGraph** state machine runs a debate between a Strategist
+  and a Risk Analyst, both grounded strictly in retrieved graph evidence, then a Synthesizer
+  produces the final verdict.
+
+```mermaid
+flowchart LR
+    Docs[Company documents] -->|LLMGraphTransformer| KG[(Neo4j Knowledge Graph)]
+    KG --> Retr["Hybrid Retrieval<br/>IBM Granite vectors + full-text + graph expansion"]
+    Retr --> Lib["The Librarian<br/>GraphRAG Q&amp;A"]
+    Retr --> Board["The Boardroom<br/>Multi-agent debate"]
+```
+
+The Boardroom workflow (LangGraph):
+
+```mermaid
+flowchart LR
+    S[Supervisor] --> R[Retrieval]
+    R --> ST[Strategist]
+    ST --> RA[Risk Analyst]
+    RA -->|loop for N rounds| ST
+    RA --> SY[Synthesizer]
+    SY --> V["Go / No-Go recommendation<br/>with cited evidence"]
+```
+
+**Model roles:** IBM Granite handles embeddings/vector search locally (no embedding API key
+required); Google Gemini handles chat/reasoning across the three surfaces; LangChain and
+LangGraph provide orchestration; Neo4j AuraDB stores the graph.
+
+## How IBM Bob Was Used
+
+**IBM Bob was the primary development tool for this project.** The full-stack application —
+FastAPI backend, Neo4j integration, the hybrid GraphRAG retrieval pipeline, the LangGraph
+multi-agent debate, and the Next.js/React frontend — was designed, scaffolded, and iterated
+on with IBM Bob. Bob was used to:
+
+- Scaffold the backend/frontend structure and wire up the services, routers, and API client.
+- Implement and refine the GraphRAG retrieval and the multi-agent Boardroom debate graph.
+- Refactor and extend features — for example, migrating vector embeddings from a hosted
+  provider to a **local IBM Granite** model while keeping the rest of the pipeline unchanged.
+- Explore the codebase, debug, and keep documentation in sync.
+
 
 ## Tech Stack
 - **Frontend**: Next.js, React, Tailwind CSS
@@ -175,12 +259,7 @@ curl "http://localhost:8000/api/ingest/status"
 - `GET /` — Basic health check
 - `GET /health` — Detailed health check (includes Neo4j connectivity)
 
-## License
-MIT
-
-
-
-Test Questions based on Mock Data:
+## Good Test Questions based on Mock Data:
 
 Librarian (GraphRAG)
 
